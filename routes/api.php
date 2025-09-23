@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/providers', [ProvidersController::class, 'index'])
     ->name('providers.index');
 
-// Route::get('/providers/{provider}', [ProvidersController::class, 'show'])
-//     ->name('providers.show');
+Route::get('/providers/{provider}', [ProvidersController::class, 'show'])
+    ->name('providers.show');
 
 Route::post('/providers', [ProvidersController::class, 'store'])
     ->name('providers.store');

@@ -27,10 +27,10 @@ class ProvidersController extends Controller
         return ProviderResource::collection($providers);
     }
 
-    // public function show(Provider $provider)
-    // {
-    //     return new ProviderResource($provider);
-    // }
+    public function show(Provider $provider)
+    {
+        return new ProviderResource($provider);
+    }
 
     public function store(FormProviderRequest $request)
     {
@@ -41,11 +41,4 @@ class ProvidersController extends Controller
             'provider' => new ProviderResource($provider)
         ], Response::HTTP_CREATED);
     }
-    
-    // public function update(FormProviderRequest $request, Provider $provider)
-    // {
-    //     $provider->update($request->validated());
-
-    //     return response()->json(['message' => 'ok', 'provider' => $provider], Response::HTTP_OK);
-    // }
 }
