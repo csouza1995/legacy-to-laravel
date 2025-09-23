@@ -1,61 +1,193 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Migração de Sistema Legacy para Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este projeto demonstra a migração de um sistema PHP legado de fornecedores para Laravel moderno, aplicando boas práticas de desenvolvimento e arquitetura limpa.
 
-## About Laravel
+## Tecnologias Utilizadas
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Laravel 11** - Framework PHP moderno
+- **MySQL/SQLite** - Banco de dados
+- **PHPUnit** - Testes automatizados
+- **Eloquent ORM** - Mapeamento objeto-relacional
+- **Form Requests** - Validação de dados
+- **API Resources** - Formatação de resposta
+- **Service Layer** - Lógica de negócio
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Funcionalidades Implementadas
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### ✅ Migração Completa do Sistema Legado
 
-## Learning Laravel
+- **Endpoints REST** equivalentes ao sistema legado
+- **Validação robusta** com FormRequests customizados
+- **Sanitização de CNPJ** com remoção automática de caracteres especiais
+- **Validação de CNPJ** com algoritmo completo de verificação
+- **Soft Deletes** para histórico de dados
+- **Transações de banco** para consistência
+- **Testes automatizados** com cobertura completa
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🔄 Compatibilidade com Sistema Legado
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Parâmetros legados** suportados (`nome` → `name`, `q` → `search`)
+- **Formato de resposta** mantendo compatibilidade (`criado_em`, `nome`)
+- **Mesma lógica de filtros** e ordenação
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Instalação e Configuração
 
-## Laravel Sponsors
+### 1. Clonar o repositório
+```bash
+git clone <repository-url>
+cd legacy-to-laravel
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2. Instalar dependências
+```bash
+composer install
+```
 
-### Premium Partners
+### 3. Configurar ambiente
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 4. Configurar banco de dados
+Edite o arquivo `.env` com suas configurações de banco:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Contributing
+### 5. Executar migrações
+```bash
+php artisan migrate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 6. Popular banco com dados de teste (opcional)
+```bash
+php artisan db:seed
+```
 
-## Code of Conduct
+### 7. Iniciar servidor
+```bash
+php artisan serve
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Endpoints da API
 
-## Security Vulnerabilities
+### GET `/api/providers`
+Lista fornecedores com filtro opcional por nome.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Parâmetros:**
+- `search` ou `q` (opcional): filtro por nome
 
-## License
+**Exemplo:**
+```bash
+curl "http://localhost:8000/api/providers?search=ABC"
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### POST `/api/providers`
+Cria um novo fornecedor.
+
+**Payload:**
+```json
+{
+    "name": "Fornecedor ABC Ltda",
+    "cnpj": "11.222.333/0001-81",
+    "email": "contato@abc.com.br"
+}
+```
+
+**Exemplo:**
+```bash
+curl -X POST "http://localhost:8000/api/providers" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Fornecedor Teste","cnpj":"11222333000181","email":"teste@fornecedor.com"}'
+```
+
+## Executar Testes
+
+### Todos os testes
+```bash
+php artisan test
+```
+
+### Testes específicos
+```bash
+php artisan test tests/Feature/ProviderTest.php
+```
+
+### Com cobertura de código
+```bash
+php artisan test --coverage
+```
+
+## Estrutura do Projeto
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   └── ProvidersController.php    # Controlador REST
+│   ├── Requests/
+│   │   ├── FormProviderRequest.php    # Validação de criação
+│   │   └── IndexProviderRequest.php   # Validação de listagem
+│   └── Resources/
+│       └── ProviderResource.php       # Formatação de resposta
+├── Models/
+│   └── Provider.php                   # Model Eloquent
+├── Rules/
+│   └── ValidCnpj.php                 # Validação customizada de CNPJ
+└── Services/
+    ├── CnpjService.php               # Utilitários para CNPJ
+    └── ProviderService.php           # Lógica de negócio
+
+database/
+├── factories/
+│   └── ProviderFactory.php          # Factory para testes
+├── migrations/
+│   └── *_create_providers_table.php # Estrutura do banco
+└── seeders/
+    └── ProviderSeeder.php           # Dados de exemplo
+
+tests/
+└── Feature/
+    └── ProviderTest.php             # Testes de integração
+```
+
+## Validações Implementadas
+
+### Fornecedor
+- **Nome**: obrigatório, mínimo 3 caracteres, máximo 255
+- **CNPJ**: obrigatório, 14 dígitos, único, algoritmo de validação completo
+- **Email**: opcional, formato válido, máximo 255 caracteres
+
+### Sanitização Automática
+- **CNPJ**: remove automaticamente pontos, barras e hífens
+- **Parâmetros**: converte nomes de parâmetros legados automaticamente
+
+## Diferenças do Sistema Legado
+
+### Melhorias de Segurança
+- ✅ **SQL Injection** prevenida com Eloquent ORM
+- ✅ **Validação robusta** com FormRequests
+- ✅ **Transações** para consistência de dados
+- ✅ **Soft Deletes** para auditoria
+
+### Melhorias de Arquitetura
+- ✅ **Service Layer** para lógica de negócio
+- ✅ **Resources** para formatação consistente
+- ✅ **PSR-12** compliance
+- ✅ **Testes automatizados** com 100% cobertura
+
+### Funcionalidades Extras
+- ✅ **Validação de CNPJ** com algoritmo completo
+- ✅ **Formatação de CNPJ** para exibição
+- ✅ **Soft Deletes** para histórico
+- ✅ **Factory/Seeder** para dados de teste
+
+## Plano de Migração
+
+Consulte o arquivo `MIGRATION_PLAN.md` para detalhes sobre a estratégia de migração do sistema legado.
