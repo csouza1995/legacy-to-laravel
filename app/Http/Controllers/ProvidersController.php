@@ -6,11 +6,15 @@ use App\Http\Requests\FormProviderRequest;
 use App\Http\Requests\IndexProviderRequest;
 use App\Http\Resources\ProviderResource;
 use App\Models\Provider;
-use Illuminate\Http\Request;
+use App\Services\ProviderService;
 use Illuminate\Http\Response;
 
 class ProvidersController extends Controller
 {
+    public function __construct(
+        private ProviderService $providerService
+    ) {}
+
     public function index(IndexProviderRequest $request)
     {
         $search = $request->input('search', '');
@@ -30,9 +34,12 @@ class ProvidersController extends Controller
 
     public function store(FormProviderRequest $request)
     {
-        $provider = Provider::create($request->validated());
+        $provider = $this->providerService->create($request->validated());
 
-        return response()->json(['message' => 'ok', 'provider' => $provider], Response::HTTP_CREATED);
+        return response()->json([
+            'message' => 'ok', 
+            'provider' => new ProviderResource($provider)
+        ], Response::HTTP_CREATED);
     }
     
     // public function update(FormProviderRequest $request, Provider $provider)
