@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidCnpj;
 use App\Services\CnpjService;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,7 +25,7 @@ class FormProviderRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', 'min:3'],
-            'cnpj' => ['required', 'string', 'digits:14', 'unique:providers,cnpj'],
+            'cnpj' => ['required', 'string', 'digits:14', 'unique:providers,cnpj', new ValidCnpj()],
             'email' => ['nullable', 'email', 'max:255'],
         ];
     }
