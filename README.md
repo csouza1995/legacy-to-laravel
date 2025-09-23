@@ -50,29 +50,61 @@ php artisan key:generate
 ```
 
 ### 4. Configurar banco de dados
-Edite o arquivo `.env` com suas configurações de banco:
+Edite o arquivo `.env` com suas configurações de banco de dados:
+
+**Para instalação tradicional (XAMPP, WAMP, WSL, Linux, etc.):**
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=laravel
 DB_USERNAME=root
-DB_PASSWORD=
+DB_PASSWORD=sua_senha_aqui
 ```
 
-### 5. Executar migrações
+**Para Laravel Sail (Docker):**
+```env
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
+```
+
+### 5. Iniciar ambiente (Laravel Sail - Opcional)
+Se preferir usar Laravel Sail com Docker, execute:
 ```bash
+./vendor/bin/sail up -d
+```
+
+**⚠️ Importante:** A partir deste ponto, se estiver usando Sail, substitua `php artisan` por `./vendor/bin/sail artisan` em todos os comandos.
+
+### 6. Executar migrações
+```bash
+# Instalação tradicional
 php artisan migrate
+
+# Com Laravel Sail
+./vendor/bin/sail artisan migrate
 ```
 
-### 6. Popular banco com dados de teste (opcional)
+### 7. Popular banco com dados de teste (opcional)
 ```bash
+# Instalação tradicional
 php artisan db:seed
+
+# Com Laravel Sail
+./vendor/bin/sail artisan db:seed
 ```
 
-### 7. Iniciar servidor
+### 8. Iniciar servidor
 ```bash
+# Instalação tradicional
 php artisan serve
+
+# Com Laravel Sail (já estará rodando na porta 80)
+# Acesse: http://localhost
 ```
 
 ## Endpoints da API
@@ -85,7 +117,11 @@ Lista fornecedores com filtro opcional por nome.
 
 **Exemplo:**
 ```bash
+# Instalação tradicional (porta 8000)
 curl "http://localhost:8000/api/providers?search=ABC"
+
+# Com Laravel Sail (porta 80)
+curl "http://localhost/api/providers?search=ABC"
 ```
 
 ### POST `/api/providers`
@@ -102,7 +138,13 @@ Cria um novo fornecedor.
 
 **Exemplo:**
 ```bash
+# Instalação tradicional (porta 8000)
 curl -X POST "http://localhost:8000/api/providers" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Fornecedor Teste","cnpj":"11222333000181","email":"teste@fornecedor.com"}'
+
+# Com Laravel Sail (porta 80)
+curl -X POST "http://localhost/api/providers" \
   -H "Content-Type: application/json" \
   -d '{"name":"Fornecedor Teste","cnpj":"11222333000181","email":"teste@fornecedor.com"}'
 ```
@@ -111,17 +153,29 @@ curl -X POST "http://localhost:8000/api/providers" \
 
 ### Todos os testes
 ```bash
+# Instalação tradicional
 php artisan test
+
+# Com Laravel Sail
+./vendor/bin/sail artisan test
 ```
 
 ### Testes específicos
 ```bash
+# Instalação tradicional
 php artisan test tests/Feature/ProviderTest.php
+
+# Com Laravel Sail
+./vendor/bin/sail artisan test tests/Feature/ProviderTest.php
 ```
 
 ### Com cobertura de código
 ```bash
+# Instalação tradicional
 php artisan test --coverage
+
+# Com Laravel Sail
+./vendor/bin/sail artisan test --coverage
 ```
 
 ## Estrutura do Projeto
