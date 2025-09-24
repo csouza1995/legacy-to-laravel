@@ -4,7 +4,7 @@ Este projeto demonstra a migração de um sistema PHP legado de fornecedores par
 
 ## Tecnologias Utilizadas
 
-- **Laravel 11** - Framework PHP moderno
+- **Laravel 12** - Framework PHP moderno
 - **MySQL/SQLite** - Banco de dados
 - **PHPUnit** - Testes automatizados
 - **Eloquent ORM** - Mapeamento objeto-relacional
